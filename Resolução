@@ -1,0 +1,38 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
+
+csv = pd.read_csv('dados.csv', sep=';')
+
+csv = csv.dropna()
+
+le = LabelEncoder()
+csv['Tipo'] = le.fit_transform(csv['Tipo'])
+
+dados = csv.values
+
+atributos = dados[:, 0:5]
+
+likes = dados[:, 5]
+comentarios = dados[:, 6]
+compartilhamentos = dados[:, 7]
+
+modelo_likes = LinearRegression()
+modelo_coment = LinearRegression()
+modelo_comp = LinearRegression()
+
+modelo_likes.fit(atributos, likes)
+modelo_coment.fit(atributos, comentarios)
+modelo_comp.fit(atributos, compartilhamentos)
+
+tipo = int(input('Tipo: Foto[0]|Link[1]|Status[2]|Video[3]: '))
+mes = int(input('Mês: '))
+dia = int(input('Dia da semana (1-7): '))
+hora = int(input('Hora: '))
+pago = int(input('Pago: SIM[1]|NÃO[0]: '))
+
+entrada = [[tipo, mes, dia, hora, pago]]
+
+print("Likes:", int(modelo_likes.predict(entrada)[0]))
+print("Comentários:", int(modelo_coment.predict(entrada)[0]))
+print("Compartilhamentos:", int(modelo_comp.predict(entrada)[0]))
